@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Nutrition Dashboard</title>
+      
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+      <style>
+          body {
+              font-family: Arial;
+              margin: 40px;
+          }
+
+          .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+          }
+
+          canvas {
+              width: 100%;
+          }
+
+          button {
+              padding:10px;
+              margin-bottom:20px;
+          }
+      </style>
+  </head>
+  <body>
+    <h1>Nutrition Analysis Dashboard</h1>
+    <label for="dietFilter">Filter Diet Type:</label>
+    <select id="dietFilter" onchange="loadData()">
+      <option value="all">All</option>
+      <option value="Keto">Keto</option>
+      <option value="Vegan">Vegan</option>
+      <option value="Vegetarian">Vegetarian</option>
+    </select>
+
+    <button onclick="loadData()">Refresh Data</button>
+
+    <p id="metadata"></p>
+
+    <div class="dashboard">
+      <h2>Average Protein by Diet Type</h2>
+      <canvas id="barChart"></canvas>
+
+      <h2>Carbs Trend</h2>
+      <canvas id="lineChart"></canvas>
+
+      <h2>Fat Distribution</h2>
+      <canvas id="pieChart"></canvas>
+    </div>
+    
+    <script>
+      let barChart, lineChart, pieChart;
+
+      async function loadData() {
+
+          try {
+
+              const start = performance.now();
+
+              const diet = document.getElementById("dietFilet").value;
+
+              const response = await fetch("AZURE_FUNCTION_URL?diet=" + diet);
+
+              if (!response.ok) {
+                  throw new Error("Server error: " + response.status);
+              }
+
+              const data = await response.json();
+
+              const end = performance.now();
+
+              document.getElementById("metadata").innerText =
+                  "Function Execution Time: " + (end - start).toFixed(2) + " ms";
+
+              const labels = data.map(d => d.Diet_type);
+              const protein = data.map(d => d["Protein(g)"]);
+              const carbs = data.map(d => d["Carbs(g)"]);
+              const fat = data.map(d => d["Fat(g)"]);
+
+              renderBar(labels, protein);
+              renderLine(labels, carbs);
+              renderPie(labels, fat);
+
+          } catch (error) {
+
+              document.getElementById("metadata").innerText =
+                  "Error loading data: " + error.message;
+
+              console.error(error);
+
+          }
+      }
+
+      function renderBar(labels, values) {
+
+          if(barChart) barChart.destroy();
+
+          barChart = new Chart(
+              document.getElementById("barChart"),
+              {
+                  type: "bar",
+                  data: {
+                      labels: labels,
+                      datasets: [{
+                          label: "Average Protein",
+                          data: values
+                      }]
+                  }
+              }
+          );
+      }
+
+      function renderLine(labels, values) {
+
+          if(lineChart) lineChart.destroy();
+
+          lineChart = new Chart(
+              document.getElementById("lineChart"),
+              {
+                  type: "line",
+                  data: {
+                      labels: labels,
+                      datasets: [{
+                          label: "Average Carbs",
+                          data: values
+                      }]
+                  }
+              }
+          );
+      }
+
+      function renderPie(labels, values) {
+
+          if(pieChart) pieChart.destroy();
+
+          pieChart = new Chart(
+              document.getElementById("pieChart"),
+              {
+                  type: "pie",
+                  data: {
+                      labels: labels,
+                      datasets: [{
+                          label: "Average Fat",
+                          data: values
+                      }]
+                  }
+              }
+          );
+      }
+
+      loadData();
+    </script>
+  </body>
+</html>
