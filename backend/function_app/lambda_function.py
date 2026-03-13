@@ -5,7 +5,7 @@ import os
 def run_task_3_simulation():
     print("🚀 --- Task 3: Nutritional Analysis Simulation ---")
     
-    input_file = "All_Diets.csv"
+    input_file = "data/All_Diets.csv"
     
     if not os.path.exists(input_file):
         print(f"❌ Error: {input_file} not found in current directory!")

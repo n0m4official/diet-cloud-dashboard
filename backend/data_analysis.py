@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # 1. Load the dataset
 try:
-    df = pd.read_csv('All_Diets.csv')
+    df = pd.read_csv('data/All_Diets.csv')
     print("✅ Dataset loaded successfully!")
 except FileNotFoundError:
     print("❌ Error: All_Diets.csv file not found")

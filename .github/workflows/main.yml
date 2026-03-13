@@ -22,8 +22,8 @@ jobs:
 
     - name: Run Analysis Script
       run: |
-        if [ -f lambda_function.py ]; then
-          python lambda_function.py
+        if [ -f backend/function_app/lambda_function.py ]; then
+          python backend/function_app/lambda_function.py
         else
           echo "Error: lambda_function.py not found!"
           exit 1
