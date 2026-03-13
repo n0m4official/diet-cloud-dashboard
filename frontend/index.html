@@ -42,14 +42,22 @@
     <p id="metadata"></p>
 
     <div class="dashboard">
-      <h2>Average Protein by Diet Type</h2>
-      <canvas id="barChart"></canvas>
 
-      <h2>Carbs Trend</h2>
-      <canvas id="lineChart"></canvas>
+    <div>
+        <h2>Average Protein by Diet Type</h2>
+        <canvas id="barChart"></canvas>
+    </div>
 
-      <h2>Fat Distribution</h2>
-      <canvas id="pieChart"></canvas>
+    <div>
+        <h2>Carbs Trend</h2>
+        <canvas id="lineChart"></canvas>
+    </div>
+
+    <div>
+        <h2>Fat Distribution</h2>
+        <canvas id="pieChart"></canvas>
+    </div>
+
     </div>
     
     <script>
@@ -63,7 +71,9 @@
 
               const diet = document.getElementById("dietFilter").value;
 
-              const response = await fetch("AZURE_FUNCTION_URL?diet=" + diet);
+              const API_URL = "PLACEHOLDER"; // Replace with actual API url
+
+              const response = await fetch(`${API_URL}?diet=${diet}`);
 
               if (!response.ok) {
                   throw new Error("Server error: " + response.status);
